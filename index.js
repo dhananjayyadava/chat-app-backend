@@ -15,7 +15,14 @@ const app = express();
 const server = http.createServer(app);
 
 // Middleware
-app.use(cors());
+// Middleware
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
