@@ -10,7 +10,6 @@ export const userVerify = async (req, res, next) => {
     if (!authHeader) {
       return sendResponse(res, 403, false, "You are not authenticated");
     }
-
     const token = authHeader.split(" ")[1];
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
@@ -18,19 +17,10 @@ export const userVerify = async (req, res, next) => {
     if (!user) {
       return sendResponse(res, 403, false, "User not found");
     }
-
     req.user = user;
     next();
   } catch (error) {
     console.error("Error verifying customer:", error);
-    return sendResponse(
-      res,
-      401,
-      false,
-      error.name === "TokenExpiredError"
-        ? "Token has expired"
-        : "Invalid token",
-      { action: "logout" }
-    );
+    return sendResponse(res, 401, false, { action: "logout" });
   }
 };

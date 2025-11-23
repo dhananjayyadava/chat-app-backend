@@ -17,16 +17,14 @@ const messageSchema = new mongoose.Schema(
         senderId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
-        },
-        message: {
-          type: String,
           required: true,
         },
-        read: { type: Boolean, default: false },
-        readAt: { type: Date, default: null },
+        message: { type: String, required: true },
         createdAt: { type: Date, default: Date.now },
       },
     ],
+    // STORE only reference IDs
+    hashTags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Hashtag" }],
   },
   { timestamps: true }
 );

@@ -11,6 +11,8 @@ class AuthController {
     try {
       const { username, email, password } = req.body;
 
+      console.log(req.body);
+
       // Validate input
       if (!username || !email || !password) {
         return sendResponse(res, 400, false, "All fields are required.");
@@ -31,6 +33,7 @@ class AuthController {
 
       return sendResponse(res, 201, true, "User registered successfully.");
     } catch (error) {
+      console.log(error);
       return sendResponse(res, 500, false, "Server error.", error);
     }
   }
@@ -72,27 +75,22 @@ class AuthController {
       // Log user data for debugging
       console.log("User found:", user);
 
-      // Ensure user has a username before signing the token
-      if (!user.username) {
-        return sendResponse(
-          res,
-          500,
-          false,
-          "User data error: Missing username."
-        );
-      }
-
       // Generate JWT Token with id and username
       const token = jwt.sign(
         {
           id: user._id,
-          username: user.username,
         },
         process.env.JWT_SECRET_KEY,
         { expiresIn: 60 * 60 * 24 } // 1 day in seconds
       );
 
-      return sendResponse(res, 200, true, "Login successful.", { token });
+      return sendResponse(res, 200, true, "Login successful.", {
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+        },
+      });
     } catch (error) {
       console.error("Login error:", error);
       return sendResponse(res, 500, false, "Server error.", {
